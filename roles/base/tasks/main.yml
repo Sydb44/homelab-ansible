@@ -1,8 +1,0 @@
-- name: Install base packages
-  ansible.builtin.package:
-    name:
-      - git
-      - curl
-      - htop
-      - vim
-    state: present

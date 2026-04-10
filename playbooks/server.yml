@@ -1,5 +1,6 @@
-- name: Install git
+- name: Provision server
   become: true
   hosts: servers
   roles:
-    - base
+    - common
+    - server

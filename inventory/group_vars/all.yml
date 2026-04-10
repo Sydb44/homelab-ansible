@@ -1,0 +1,10 @@
+common_packages:                                                                                                                                                                                
+    - git                                                                                                                                                                                         
+    - curl                                                                                                                                                                                        
+    - htop
+    - vim
+    - tmux
+    - wget
+
+timezone: "Europe/Bucharest"
+

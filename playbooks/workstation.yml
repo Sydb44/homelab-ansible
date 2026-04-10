@@ -1,5 +1,6 @@
-- name: Install git
+- name: Provision workstation
   become: true
-  hosts: main
+  hosts: workstation
   roles:
-    - base
+    - common
+    - workstation
