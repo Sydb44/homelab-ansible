@@ -1,4 +1,8 @@
 - name: Restart timesyncd                                                                                                                                                                       
   ansible.builtin.service:                                                                                                                                                                      
       name: systemd-timesyncd
-      state: restarted 
+      state: restarted
+- name: Restart SSH                                                                                                                                 
+  ansible.builtin.service:                                                                                                                          
+      name: "{{ ssh_service }}"                                                                                                                       
+      state: restarted

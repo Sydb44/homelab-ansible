@@ -9,3 +9,12 @@
 - name: Set host name
   ansible.builtin.hostname:
     name: "{{ hostname }}"
+- name: Deploy sshd_config
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root 
+    group: root 
+    mode: '0600'
+  notify: Restart SSH
+    
