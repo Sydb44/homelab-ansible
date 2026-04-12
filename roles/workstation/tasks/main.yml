@@ -1,0 +1,10 @@
+- name: Install workstation_packages
+  ansible.builtin.package:
+    name: "{{ workstation_packages }}"
+    state: present 
+
+- name: Install workstation_aur_packages
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm --needed {{ item }}
+  become: false 
+  loop: "{{ workstation_aur_packages }}"
