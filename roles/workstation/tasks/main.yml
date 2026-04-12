@@ -6,5 +6,24 @@
 - name: Install workstation_aur_packages
   ansible.builtin.command:
     cmd: yay -S --noconfirm --needed {{ item }}
+  changed_when: false
   become: false 
   loop: "{{ workstation_aur_packages }}"
+
+- name: Enable and start SDDM                                                                                                                                     
+  ansible.builtin.service:                                
+    name: sddm 
+    state: started
+    enabled: true
+
+- name: Enable and start Bluetooth                                                                                                                                     
+  ansible.builtin.service:                                
+    name: bluetooth 
+    state: started
+    enabled: true
+
+- name: Enable and start auto-cpufreq                                                                                                                          
+  ansible.builtin.service:                                
+    name: auto-cpufreq 
+    state: started
+    enabled: true
