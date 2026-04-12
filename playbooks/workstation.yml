@@ -1,6 +1,8 @@
 - name: Provision workstation
   become: true
-  hosts: workstation
+  hosts: workstation 
   roles:
-    - common
-    - workstation
+    - role: common
+      tags: common 
+    - role: workstation  
+      tags: workstation 

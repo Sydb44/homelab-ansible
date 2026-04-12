@@ -1,0 +1,4 @@
+- name: Restart SDDM                                                                                                                                                                        
+  ansible.builtin.service:                                                                                                                                                                      
+      name: sddm  
+      state: restarted 
