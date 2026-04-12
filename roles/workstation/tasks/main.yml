@@ -27,3 +27,9 @@
     name: auto-cpufreq 
     state: started
     enabled: true
+
+- name: Deploy SDDM config 
+  ansible.builtin.template:
+    src: sddm.conf.j2
+    dest: /etc/sddm.conf
+  notify: Restart SDDM 
