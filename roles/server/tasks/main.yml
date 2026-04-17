@@ -70,3 +70,17 @@
   community.general.ufw:
     state: enabled                                                                                                                                  
     policy: deny
+
+- name: Create directories 
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory 
+    mode: '0755'
+  loop:
+    - /opt/homelab            
+    - /opt/homelab/traefik                                                                                                                                   
+    - /opt/homelab/vaultwarden                                
+    - /opt/homelab/nextcloud  
+    - /opt/homelab/gitea    
+    - /opt/homelab/paperless
+    - /opt/homelab/uptime-kuma
