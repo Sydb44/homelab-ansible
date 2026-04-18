@@ -1,6 +1,6 @@
 # homelab-ansible
 
-Ansible playbooks for my homelab. The goal is that if I ever wipe either machine, I can run one command and get back to a fully configured state without touching anything manually.
+Ansible playbooks for my homelab.
 
 Two machines:
 - **main** (192.168.1.136) — Arch Linux, Hyprland desktop
