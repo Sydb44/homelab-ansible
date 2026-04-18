@@ -1,23 +1,41 @@
 services:
+  docker-proxy:
+    image: nginx:alpine
+    container_name: docker-proxy
+    restart: unless-stopped
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/homelab/traefik/docker-proxy.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - docker-proxy-net
+
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.3
     container_name: traefik
     restart: unless-stopped
     command:
-      - --api.insecure=true                                                                                                   
-      - --providers.docker=true                                                                           
-      - --providers.docker.exposedbydefault=false                           
-      - --entrypoints.web.address=:80                                                                                                      
+      - --api.insecure=true
+      - --log.level=DEBUG
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.endpoint=tcp://docker-proxy:2375
+      - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /opt/homelab/traefik/data:/data 
-    networks:                                             
+      - /opt/homelab/traefik/data:/data
+    networks:
       - proxy
+      - docker-proxy-net
+    depends_on:
+      - docker-proxy
+
 networks:
-  proxy:                                                                                                                                                 
+  proxy:
     external: true
+  docker-proxy-net:
+    internal: true

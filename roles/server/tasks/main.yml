@@ -85,7 +85,17 @@
     - /opt/homelab/paperless
     - /opt/homelab/uptime-kuma
 
+- name: Deploy Traefik Docker proxy config
+  ansible.builtin.template:
+    src: traefik/docker-proxy.conf.j2
+    dest: /opt/homelab/traefik/docker-proxy.conf
+
 - name: Deploy Traefik Compose
   ansible.builtin.template:
     src: traefik/docker-compose.yml.j2
     dest: /opt/homelab/traefik/docker-compose.yml
+
+- name: Deploy Vaultwarden Compose
+  ansible.builtin.template:
+    src: vaultwarden/docker-compose.yml.j2
+    dest: /opt/homelab/vaultwarden/docker-compose.yml 
