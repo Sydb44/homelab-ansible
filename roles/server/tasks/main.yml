@@ -100,6 +100,26 @@
     src: vaultwarden/docker-compose.yml.j2
     dest: /opt/homelab/vaultwarden/docker-compose.yml
 
+- name: Deploy Gitea Compose
+  ansible.builtin.template:
+    src: gitea/docker-compose.yml.j2
+    dest: /opt/homelab/gitea/docker-compose.yml
+
+- name: Deploy Nextcloud Compose
+  ansible.builtin.template:
+    src: nextcloud/docker-compose.yml.j2
+    dest: /opt/homelab/nextcloud/docker-compose.yml
+
+- name: Deploy Paperless Compose
+  ansible.builtin.template:
+    src: paperless/docker-compose.yml.j2
+    dest: /opt/homelab/paperless/docker-compose.yml
+
+- name: Deploy Uptime Kuma Compose
+  ansible.builtin.template:
+    src: uptime-kuma/docker-compose.yml.j2
+    dest: /opt/homelab/uptime-kuma/docker-compose.yml
+
 - name: Create cloudflared directory
   ansible.builtin.file:
     path: /opt/homelab/cloudflared

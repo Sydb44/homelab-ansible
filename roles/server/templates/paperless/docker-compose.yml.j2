@@ -1,0 +1,33 @@
+services:
+  paperless-redis:
+    image: redis:7
+    container_name: paperless-redis
+    restart: unless-stopped
+    networks:
+      - paperless-internal
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless
+    restart: unless-stopped
+    depends_on:
+      - paperless-redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.paperless.rule=Host(`paperless.silion.dev`)"
+      - "traefik.http.routers.paperless.entrypoints=web"
+      - "traefik.http.services.paperless.loadbalancer.server.port=8000"
+    environment:
+      - PAPERLESS_REDIS=redis://paperless-redis:6379
+      - PAPERLESS_URL=https://paperless.silion.dev
+    volumes:
+      - /opt/homelab/paperless/data:/usr/src/paperless/data
+    networks:
+      - proxy
+      - paperless-internal
+
+networks:
+  proxy:
+    external: true
+  paperless-internal:
+    internal: true

@@ -1,0 +1,17 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`status.silion.dev`)"
+      - "traefik.http.routers.uptime-kuma.entrypoints=web"
+    volumes:
+      - /opt/homelab/uptime-kuma/data:/app/data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -70,6 +70,9 @@ workstation_packages:
   - btrfs-progs
   - smartmontools
   - auto-cpufreq
+  - yazi
+  - ffmpegthumbnailer
+  - poppler
   - stow
   - nodejs
   - npm

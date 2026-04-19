@@ -1,0 +1,18 @@
+services:
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitea.rule=Host(`git.silion.dev`)"
+      - "traefik.http.routers.gitea.entrypoints=web"
+      - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+    volumes:
+      - /opt/homelab/gitea/data:/data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

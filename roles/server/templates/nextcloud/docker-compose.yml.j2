@@ -1,0 +1,17 @@
+services:
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.rule=Host(`cloud.silion.dev`)"
+      - "traefik.http.routers.nextcloud.entrypoints=web"
+    volumes:
+      - /opt/homelab/nextcloud/data:/var/www/html
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
