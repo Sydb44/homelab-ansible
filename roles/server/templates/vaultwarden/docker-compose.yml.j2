@@ -1,17 +1,17 @@
 services:
   vaultwarden:
-    image: vaultwarden/server 
-    container_name: vaultwarden 
+    image: vaultwarden/server
+    container_name: vaultwarden
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vaultwarden.rule=Host(`vault.silion.dev`)"                                                              
-      - "traefik.http.routers.vaultwarden.entrypoints=websecure"
-      - "traefik.http.routers.vaultwarden.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vault.silion.dev`)"
+      - "traefik.http.routers.vaultwarden.entrypoints=web"
     volumes:
-      - /opt/homelab/vaultwarden/data:/data 
-    networks:                                             
+      - /opt/homelab/vaultwarden/data:/data
+    networks:
       - proxy
+
 networks:
-  proxy:                                                                                                                                                 
-    external: true 
+  proxy:
+    external: true

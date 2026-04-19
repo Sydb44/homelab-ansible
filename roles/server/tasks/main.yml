@@ -98,4 +98,15 @@
 - name: Deploy Vaultwarden Compose
   ansible.builtin.template:
     src: vaultwarden/docker-compose.yml.j2
-    dest: /opt/homelab/vaultwarden/docker-compose.yml 
+    dest: /opt/homelab/vaultwarden/docker-compose.yml
+
+- name: Create cloudflared directory
+  ansible.builtin.file:
+    path: /opt/homelab/cloudflared
+    state: directory
+    mode: '0755'
+
+- name: Deploy cloudflared Compose
+  ansible.builtin.template:
+    src: cloudflared/docker-compose.yml.j2
+    dest: /opt/homelab/cloudflared/docker-compose.yml
