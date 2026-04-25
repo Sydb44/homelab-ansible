@@ -10,6 +10,29 @@
   become: false 
   loop: "{{ workstation_aur_packages }}"
 
+- name: Enable and start Docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: Create node-exporter directory
+  ansible.builtin.file:
+    path: /opt/homelab/node-exporter
+    state: directory
+    mode: '0755'
+
+- name: Deploy node-exporter Compose
+  ansible.builtin.template:
+    src: node-exporter/docker-compose.yml.j2
+    dest: /opt/homelab/node-exporter/docker-compose.yml
+
 - name: Enable and start SDDM                                                                                                                                     
   ansible.builtin.service:                                
     name: sddm 

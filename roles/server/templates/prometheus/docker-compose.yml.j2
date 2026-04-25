@@ -1,0 +1,18 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+    volumes:
+      - /opt/homelab/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /opt/homelab/prometheus/data:/prometheus
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

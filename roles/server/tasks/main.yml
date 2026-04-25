@@ -65,7 +65,13 @@
     rule: allow
     port: '443'
     proto: tcp
-                                              
+
+- name: Allow node-exporter
+  community.general.ufw:
+    rule: allow
+    port: '9100'
+    proto: tcp
+
 - name: Enable UFW                      
   community.general.ufw:
     state: enabled                                                                                                                                  
@@ -119,6 +125,56 @@
   ansible.builtin.template:
     src: uptime-kuma/docker-compose.yml.j2
     dest: /opt/homelab/uptime-kuma/docker-compose.yml
+
+- name: Create prometheus directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - /opt/homelab/prometheus/config
+    - /opt/homelab/prometheus/data
+    - /opt/homelab/grafana/data
+
+- name: Set prometheus data directory ownership
+  ansible.builtin.file:
+    path: /opt/homelab/prometheus/data
+    owner: '65534'
+    group: '65534'
+    state: directory
+
+- name: Set grafana data directory ownership
+  ansible.builtin.file:
+    path: /opt/homelab/grafana/data
+    owner: '472'
+    group: '472'
+    state: directory
+
+- name: Deploy Prometheus config
+  ansible.builtin.template:
+    src: prometheus/prometheus.yml.j2
+    dest: /opt/homelab/prometheus/config/prometheus.yml
+
+- name: Deploy Prometheus Compose
+  ansible.builtin.template:
+    src: prometheus/docker-compose.yml.j2
+    dest: /opt/homelab/prometheus/docker-compose.yml
+
+- name: Deploy Grafana Compose
+  ansible.builtin.template:
+    src: grafana/docker-compose.yml.j2
+    dest: /opt/homelab/grafana/docker-compose.yml
+
+- name: Create node-exporter directory
+  ansible.builtin.file:
+    path: /opt/homelab/node-exporter
+    state: directory
+    mode: '0755'
+
+- name: Deploy node-exporter Compose
+  ansible.builtin.template:
+    src: node-exporter/docker-compose.yml.j2
+    dest: /opt/homelab/node-exporter/docker-compose.yml
 
 - name: Create cloudflared directory
   ansible.builtin.file:

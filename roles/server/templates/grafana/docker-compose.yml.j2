@@ -1,0 +1,18 @@
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.silion.dev`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    volumes:
+      - /opt/homelab/grafana/data:/var/lib/grafana
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

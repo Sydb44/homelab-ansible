@@ -73,6 +73,8 @@ workstation_packages:
   - yazi
   - ffmpegthumbnailer
   - poppler
+  - docker
+  - docker-compose
   - stow
   - nodejs
   - npm
