@@ -33,6 +33,18 @@
     src: node-exporter/docker-compose.yml.j2
     dest: /opt/homelab/node-exporter/docker-compose.yml
 
+- name: Allow K3s API port
+  community.general.ufw:
+    rule: allow
+    port: '6443'
+    proto: tcp
+
+- name: Allow kubelet port
+  community.general.ufw:
+    rule: allow
+    port: '10250'
+    proto: tcp
+
 - name: Enable and start SDDM                                                                                                                                     
   ansible.builtin.service:                                
     name: sddm 
