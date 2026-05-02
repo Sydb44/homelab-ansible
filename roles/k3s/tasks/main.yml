@@ -1,0 +1,60 @@
+- name: Install K3s server (control plane)
+  ansible.builtin.shell:
+    cmd: curl -sfL https://get.k3s.io | sh -s - server --disable traefik
+    creates: /usr/local/bin/k3s
+  when: inventory_hostname in groups['workstation']
+
+- name: Wait for K3s to be ready
+  ansible.builtin.wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+    state: present
+    timeout: 60
+  when: inventory_hostname in groups['workstation']
+
+- name: Read K3s node token
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: k3s_token_raw
+  when: inventory_hostname in groups['workstation']
+
+- name: Set K3s token fact
+  ansible.builtin.set_fact:
+    k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+  when: inventory_hostname in groups['workstation']
+
+- name: Install K3s agent (worker)
+  ansible.builtin.shell:
+    cmd: >
+      INSTALL_K3S_SKIP_START=true
+      curl -sfL https://get.k3s.io |
+      K3S_URL=https://192.168.1.136:6443
+      K3S_TOKEN={{ hostvars[groups['workstation'][0]]['k3s_token'] }}
+      sh -s - agent
+    creates: /usr/local/bin/k3s
+  when: inventory_hostname in groups['servers']
+
+- name: Enable and start K3s agent
+  ansible.builtin.service:
+    name: k3s-agent
+    state: started
+    enabled: true
+  when: inventory_hostname in groups['servers']
+
+- name: Create kubectl config directory
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/.kube
+    state: directory
+    mode: '0700'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  when: inventory_hostname in groups['workstation']
+
+- name: Copy kubeconfig for user
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/{{ ansible_user }}/.kube/config
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+  when: inventory_hostname in groups['workstation']

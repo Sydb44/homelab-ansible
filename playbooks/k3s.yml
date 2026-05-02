@@ -1,0 +1,8 @@
+- name: Install K3s cluster
+  hosts: workstation:servers
+  become: true
+  serial:
+    - 1
+    - 100%
+  roles:
+    - k3s
