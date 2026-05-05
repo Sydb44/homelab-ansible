@@ -75,6 +75,7 @@ workstation_packages:
   - poppler
   - docker
   - docker-compose
+  - helm
   - stow
   - nodejs
   - npm
