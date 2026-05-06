@@ -72,6 +72,18 @@
     port: '9100'
     proto: tcp
 
+- name: Allow Flannel VXLAN
+  community.general.ufw:
+    rule: allow
+    port: '8472'
+    proto: udp
+
+- name: Allow WireGuard Flannel
+  community.general.ufw:
+    rule: allow
+    port: '51820'
+    proto: udp
+
 - name: Enable UFW                      
   community.general.ufw:
     state: enabled                                                                                                                                  
