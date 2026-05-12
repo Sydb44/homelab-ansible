@@ -35,7 +35,7 @@
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     groups: docker
-    append: yes
+    append: true
 
 - name: Enable and start Docker
   ansible.builtin.service:
@@ -43,23 +43,23 @@
     state: started
     enabled: true
 
-- name: Install UFW                                                                                                                                 
-  ansible.builtin.package:                                
-    name: ufw                                                                                                                                       
-    state: present    
-                                                                                                                                                      
+- name: Install UFW
+  ansible.builtin.package:
+    name: ufw
+    state: present
+
 - name: Allow SSH
-  community.general.ufw:                                                                                                                            
-    rule: allow                                           
+  community.general.ufw:
+    rule: allow
     port: '22'
     proto: tcp
-                                              
-- name: Allow HTTP                      
+
+- name: Allow HTTP
   community.general.ufw:
-    rule: allow                                                                                                                                     
+    rule: allow
     port: '80'
-    proto: tcp                                                                                                                                      
-                                                            
+    proto: tcp
+
 - name: Allow HTTPS
   community.general.ufw:
     rule: allow
@@ -84,22 +84,22 @@
     port: '51820'
     proto: udp
 
-- name: Enable UFW                      
+- name: Enable UFW
   community.general.ufw:
-    state: enabled                                                                                                                                  
+    state: enabled
     policy: deny
 
-- name: Create directories 
+- name: Create directories
   ansible.builtin.file:
     path: "{{ item }}"
-    state: directory 
+    state: directory
     mode: '0755'
   loop:
-    - /opt/homelab            
-    - /opt/homelab/traefik                                                                                                                                   
-    - /opt/homelab/vaultwarden                                
-    - /opt/homelab/nextcloud  
-    - /opt/homelab/gitea    
+    - /opt/homelab
+    - /opt/homelab/traefik
+    - /opt/homelab/vaultwarden
+    - /opt/homelab/nextcloud
+    - /opt/homelab/gitea
     - /opt/homelab/paperless
     - /opt/homelab/uptime-kuma
 
@@ -107,36 +107,43 @@
   ansible.builtin.template:
     src: traefik/docker-proxy.conf.j2
     dest: /opt/homelab/traefik/docker-proxy.conf
+    mode: '0644'
 
 - name: Deploy Traefik Compose
   ansible.builtin.template:
     src: traefik/docker-compose.yml.j2
     dest: /opt/homelab/traefik/docker-compose.yml
+    mode: '0644'
 
 - name: Deploy Vaultwarden Compose
   ansible.builtin.template:
     src: vaultwarden/docker-compose.yml.j2
     dest: /opt/homelab/vaultwarden/docker-compose.yml
+    mode: '0644'
 
 - name: Deploy Gitea Compose
   ansible.builtin.template:
     src: gitea/docker-compose.yml.j2
     dest: /opt/homelab/gitea/docker-compose.yml
+    mode: '0644'
 
 - name: Deploy Nextcloud Compose
   ansible.builtin.template:
     src: nextcloud/docker-compose.yml.j2
     dest: /opt/homelab/nextcloud/docker-compose.yml
+    mode: '0644'
 
 - name: Deploy Paperless Compose
   ansible.builtin.template:
     src: paperless/docker-compose.yml.j2
     dest: /opt/homelab/paperless/docker-compose.yml
+    mode: '0644'
 
 - name: Deploy Uptime Kuma Compose
   ansible.builtin.template:
     src: uptime-kuma/docker-compose.yml.j2
     dest: /opt/homelab/uptime-kuma/docker-compose.yml
+    mode: '0644'
 
 - name: Create prometheus directories
   ansible.builtin.file:
@@ -154,6 +161,7 @@
     owner: '65534'
     group: '65534'
     state: directory
+    mode: '0755'
 
 - name: Set grafana data directory ownership
   ansible.builtin.file:
@@ -161,21 +169,25 @@
     owner: '472'
     group: '472'
     state: directory
+    mode: '0755'
 
 - name: Deploy Prometheus config
   ansible.builtin.template:
     src: prometheus/prometheus.yml.j2
     dest: /opt/homelab/prometheus/config/prometheus.yml
+    mode: '0644'
 
 - name: Deploy Prometheus Compose
   ansible.builtin.template:
     src: prometheus/docker-compose.yml.j2
     dest: /opt/homelab/prometheus/docker-compose.yml
+    mode: '0644'
 
 - name: Deploy Grafana Compose
   ansible.builtin.template:
     src: grafana/docker-compose.yml.j2
     dest: /opt/homelab/grafana/docker-compose.yml
+    mode: '0644'
 
 - name: Create node-exporter directory
   ansible.builtin.file:
@@ -187,6 +199,7 @@
   ansible.builtin.template:
     src: node-exporter/docker-compose.yml.j2
     dest: /opt/homelab/node-exporter/docker-compose.yml
+    mode: '0644'
 
 - name: Create cloudflared directory
   ansible.builtin.file:
@@ -198,3 +211,4 @@
   ansible.builtin.template:
     src: cloudflared/docker-compose.yml.j2
     dest: /opt/homelab/cloudflared/docker-compose.yml
+    mode: '0644'

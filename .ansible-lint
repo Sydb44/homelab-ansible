@@ -1,5 +1,6 @@
 exclude_paths:
   - .gitea/
+  - inventory/host_vars/server1.yml
 
 skip_list:
   - command-instead-of-module

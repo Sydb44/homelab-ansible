@@ -1,13 +1,13 @@
 - name: Install workstation_packages
   ansible.builtin.package:
     name: "{{ workstation_packages }}"
-    state: present 
+    state: present
 
 - name: Install workstation_aur_packages
   ansible.builtin.command:
     cmd: yay -S --noconfirm --needed {{ item }}
   changed_when: false
-  become: false 
+  become: false
   loop: "{{ workstation_aur_packages }}"
 
 - name: Enable and start Docker
@@ -20,7 +20,7 @@
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     groups: docker
-    append: yes
+    append: true
 
 - name: Create node-exporter directory
   ansible.builtin.file:
@@ -32,6 +32,7 @@
   ansible.builtin.template:
     src: node-exporter/docker-compose.yml.j2
     dest: /opt/homelab/node-exporter/docker-compose.yml
+    mode: '0644'
 
 - name: Allow Flannel VXLAN
   community.general.ufw:
@@ -57,26 +58,27 @@
     port: '10250'
     proto: tcp
 
-- name: Enable and start SDDM                                                                                                                                     
-  ansible.builtin.service:                                
-    name: sddm 
+- name: Enable and start SDDM
+  ansible.builtin.service:
+    name: sddm
     state: started
     enabled: true
 
-- name: Enable and start Bluetooth                                                                                                                                     
-  ansible.builtin.service:                                
-    name: bluetooth 
+- name: Enable and start Bluetooth
+  ansible.builtin.service:
+    name: bluetooth
     state: started
     enabled: true
 
-- name: Enable and start auto-cpufreq                                                                                                                          
-  ansible.builtin.service:                                
-    name: auto-cpufreq 
+- name: Enable and start auto-cpufreq
+  ansible.builtin.service:
+    name: auto-cpufreq
     state: started
     enabled: true
 
-- name: Deploy SDDM config 
+- name: Deploy SDDM config
   ansible.builtin.template:
     src: sddm.conf.j2
     dest: /etc/sddm.conf
-  notify: Restart SDDM 
+    mode: '0644'
+  notify: Restart SDDM
