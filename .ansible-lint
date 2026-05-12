@@ -1,0 +1,5 @@
+exclude_paths:
+  - .gitea/
+
+skip_list:
+  - command-instead-of-module

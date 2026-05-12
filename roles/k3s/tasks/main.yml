@@ -1,6 +1,9 @@
 - name: Install K3s server (control plane)
   ansible.builtin.shell:
-    cmd: curl -sfL https://get.k3s.io | sh -s - server --disable traefik
+    cmd: |
+      set -o pipefail
+      curl -sfL https://get.k3s.io | sh -s - server --disable traefik
+    executable: /bin/bash
     creates: /usr/local/bin/k3s
   when: inventory_hostname in groups['workstation']
 
@@ -24,12 +27,13 @@
 
 - name: Install K3s agent (worker)
   ansible.builtin.shell:
-    cmd: >
-      INSTALL_K3S_SKIP_START=true
-      curl -sfL https://get.k3s.io |
-      K3S_URL=https://192.168.1.128:6443
-      K3S_TOKEN={{ hostvars[groups['workstation'][0]]['k3s_token'] }}
-      sh -s - agent
+    cmd: |
+      set -o pipefail
+      INSTALL_K3S_SKIP_START=true curl -sfL https://get.k3s.io | \
+        K3S_URL=https://192.168.1.128:6443 \
+        K3S_TOKEN={{ hostvars[groups['workstation'][0]]['k3s_token'] }} \
+        sh -s - agent
+    executable: /bin/bash
     creates: /usr/local/bin/k3s
   when: inventory_hostname in groups['servers']
 

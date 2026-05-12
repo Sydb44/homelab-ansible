@@ -1,1 +1,2 @@
 hostname: "srv-01"
+cloudflare_tunnel_token: "ROTATED_SEE_SOPS"
