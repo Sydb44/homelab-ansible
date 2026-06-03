@@ -1,3 +1,29 @@
+- name: Install base-devel for AUR
+  ansible.builtin.package:
+    name: base-devel
+    state: present
+
+- name: Check if yay is installed
+  ansible.builtin.command: which yay
+  register: yay_check
+  changed_when: false
+  failed_when: false
+
+- name: Clone yay from AUR
+  ansible.builtin.git:
+    repo: https://aur.archlinux.org/yay.git
+    dest: /tmp/yay
+    version: master
+  become: false
+  when: yay_check.rc != 0
+
+- name: Build and install yay
+  ansible.builtin.command:
+    cmd: makepkg -si --noconfirm
+    chdir: /tmp/yay
+  become: false
+  when: yay_check.rc != 0
+
 - name: Install workstation_packages
   ansible.builtin.package:
     name: "{{ workstation_packages }}"
