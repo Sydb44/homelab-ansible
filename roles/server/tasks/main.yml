@@ -129,6 +129,12 @@
     dest: /opt/homelab/traefik/docker-proxy.conf
     mode: '0644'
 
+- name: Deploy Traefik env file
+  ansible.builtin.template:
+    src: traefik/env.j2
+    dest: /opt/homelab/traefik/.env
+    mode: '0600'
+
 - name: Deploy Traefik Compose
   ansible.builtin.template:
     src: traefik/docker-compose.yml.j2

@@ -1,3 +1,13 @@
+- name: Write K3s server config
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/config.yaml
+    content: |
+      node-ip: 192.168.1.128
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname in groups['workstation']
+
 - name: Install K3s server (control plane)
   ansible.builtin.shell:
     cmd: |
