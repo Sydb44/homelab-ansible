@@ -1,53 +1,9 @@
 # homelab-ansible
 
-Ansible for the homelab hosts and base service provisioning.
+Ansible playbooks that provision my homelab: an Arch Linux workstation, a Debian server, an old T480 laptop, and the k3s cluster running across the workstation and server.
 
-## Inventory
+Three hosts in the inventory — `main` (192.168.1.136, the Arch workstation), `t480` (192.168.1.134, an Arch laptop), and `server1` (192.168.1.137, Debian). To run something, point ansible-playbook at the right playbook: `playbooks/workstation.yml` for the Arch machines, `playbooks/server.yml` for the Debian box, `playbooks/k3s.yml` to install and join the cluster. Add `--tags server` (or whatever tag) if you only want part of it, e.g. `ansible-playbook playbooks/server.yml --tags server`.
 
-- `main` (`192.168.1.136`) — Arch Linux workstation
-- `t480` (`192.168.1.134`) — Arch Linux laptop
-- `server1` (`192.168.1.137`) — Debian server
+Roles are split by what they touch. `common` runs on every machine and covers the basics — packages, timezone, hostname, SSH hardening. `workstation` and `server` handle the Arch-specific and Debian-specific setup, AUR packages and SDDM on one side, Docker/UFW/fail2ban and the compose templates on the other. `k3s` installs and joins the cluster.
 
-## Playbooks
-
-Workstations:
-
-```bash
-ansible-playbook playbooks/workstation.yml
-```
-
-Server:
-
-```bash
-ansible-playbook playbooks/server.yml
-```
-
-K3s cluster:
-
-```bash
-ansible-playbook playbooks/k3s.yml
-```
-
-Run a specific tag:
-
-```bash
-ansible-playbook playbooks/server.yml --tags server
-```
-
-## Roles
-
-- `common` — shared packages, timezone, hostname, SSH hardening
-- `workstation` — Arch workstation packages, AUR packages, SDDM, desktop services
-- `server` — Debian server packages, Docker, UFW, fail2ban, compose templates
-- `k3s` — K3s control-plane/worker installation
-
-## Secrets
-
-Host and group secrets are stored as SOPS files such as `inventory/host_vars/server1.sops.yml`.
-Ansible decrypts them through the `community.sops.sops` vars plugin configured in `ansible.cfg`.
-
-## Requirements
-
-- SSH access to the hosts
-- Passwordless sudo on the hosts
-- `ansible`, `sops`, and the `community.sops` collection installed locally
+Secrets aren't sitting in plaintext anywhere. They're SOPS-encrypted under `inventory/host_vars/*.sops.yml`, and `ansible.cfg` has the `community.sops.sops` vars plugin wired up so they decrypt automatically when a playbook runs. To actually run any of this you need SSH access and passwordless sudo on the target hosts, plus `ansible`, `sops`, and the `community.sops` collection installed locally.
