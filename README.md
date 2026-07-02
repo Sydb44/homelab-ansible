@@ -1,39 +1,53 @@
 # homelab-ansible
 
-Ansible playbooks for my homelab.
+Ansible for the homelab hosts and base service provisioning.
 
-Two machines:
-- **main** (192.168.1.136) — Arch Linux, Hyprland desktop
-- **server1** (192.168.1.137) — Debian 13, headless
+## Inventory
 
-## How to run it
+- `main` (`192.168.1.136`) — Arch Linux workstation
+- `t480` (`192.168.1.134`) — Arch Linux laptop
+- `server1` (`192.168.1.137`) — Debian server
 
-Workstation:
-```
-ansible-playbook -i inventory/inventory.ini playbooks/workstation.yml
+## Playbooks
+
+Workstations:
+
+```bash
+ansible-playbook playbooks/workstation.yml
 ```
 
 Server:
-```
-ansible-playbook -i inventory/inventory.ini playbooks/server.yml
-```
 
-To run only a specific role:
-```
-ansible-playbook -i inventory/inventory.ini playbooks/workstation.yml --tags workstation
+```bash
+ansible-playbook playbooks/server.yml
 ```
 
-## What each role does
+K3s cluster:
 
-**common** — runs on both machines. Hostname, timezone, base packages, SSH hardening (no root login, key-only auth).
+```bash
+ansible-playbook playbooks/k3s.yml
+```
 
-**workstation** — Arch-specific stuff. Pacman packages, AUR packages via yay, enables SDDM/Bluetooth/auto-cpufreq, deploys SDDM config.
+Run a specific tag:
 
-**server** — Docker, UFW firewall.
+```bash
+ansible-playbook playbooks/server.yml --tags server
+```
+
+## Roles
+
+- `common` — shared packages, timezone, hostname, SSH hardening
+- `workstation` — Arch workstation packages, AUR packages, SDDM, desktop services
+- `server` — Debian server packages, Docker, UFW, fail2ban, compose templates
+- `k3s` — K3s control-plane/worker installation
+
+## Secrets
+
+Host and group secrets are stored as SOPS files such as `inventory/host_vars/server1.sops.yml`.
+Ansible decrypts them through the `community.sops.sops` vars plugin configured in `ansible.cfg`.
 
 ## Requirements
 
-- SSH keys set up on both hosts
-- Passwordless sudo on both hosts
-- Ansible installed locally
-
+- SSH access to the hosts
+- Passwordless sudo on the hosts
+- `ansible`, `sops`, and the `community.sops` collection installed locally
